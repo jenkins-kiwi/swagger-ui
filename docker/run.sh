@@ -2,7 +2,7 @@
 
 set -e
 BASE_URL=${BASE_URL:-/}
-NGINX_ROOT=/usr/share/nginx/html
+NGINX_ROOT=/usr/share/nginx/html/apidoc
 INDEX_FILE=$NGINX_ROOT/index.html
 
 node /usr/share/nginx/configurator $INDEX_FILE
