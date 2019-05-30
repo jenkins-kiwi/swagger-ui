@@ -36,6 +36,70 @@
     <script src="./swagger-ui-bundle.js"> </script>
     <script src="./swagger-ui-standalone-preset.js"> </script>
     <script>
+    
+window.init = function(spec) {
+        // Begin Swagger UI call region
+        const ui = SwaggerUIBundle({
+          spec: spec,
+          dom_id: "#swagger-ui",
+          deepLinking: true,
+          presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+          plugins: [SwaggerUIBundle.plugins.DownloadUrl],
+          layout: "StandaloneLayout"
+        });
+      };
+
+      window.onload = function() {
+        function apiCall(uri, data, methodType) {
+          const csrftoken = getCookie("csrftoken");
+          //Add header to the URL .
+          $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+              if (!this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+              }
+            }
+          });
+
+          $.ajax({
+            url: uri,
+            method: methodType,
+            contentType: "application/json",
+            data: data,
+            success: function(response) {
+              var script = document.createElement("script");
+              // Calling the function which instantiates swaggerbundle object
+              response.host = "localhost";
+              init(response);
+            },
+            error: function(error) {}
+          });
+        }
+
+        // You can write your own getCookie function .
+        function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== "") {
+            let cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+              let cookie = jQuery.trim(cookies[i]);
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === name + "=") {
+                cookieValue = decodeURIComponent(
+                  cookie.substring(name.length + 1)
+                );
+                break;
+              }
+            }
+          }
+          return cookieValue;
+        }
+
+        //['GET','POST']
+        apiCall("https://petstore.swagger.io/v2/swagger.json", {}, "GET");
+      };
+  /*
+      
     window.onload = function() {
       // Begin Swagger UI call region
       const ui = SwaggerUIBundle({
@@ -54,7 +118,8 @@
       // End Swagger UI call region
 
       window.ui = ui
-    }
+    } */
+      
   </script>
   </body>
 </html>
